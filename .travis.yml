@@ -1,22 +1,24 @@
 sudo: required
-language: generic 
-services: 
-    - docker
+language: generic
+
+services:
+  - docker
 
 before_install:
-    - docker build -t pranavgautam/react-test -f ./client/Dockerfile.dev ./client
+  - docker build -t pranavgautam/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-    - docker run -e CI=true pranavgautam/react-test npm test
+  - docker run -e CI=true pranavgautam/react-test npm test
 
 after_success:
-    - docker build -t pranavgautam/multi-client ./client
-    - docker build -t pranavgautam/multi-nginx ./nginx
-    - docker build -t pranavgautam/multi-server ./server
-    - docker build -t pranavgautam/multi-worker ./worker
-    
-    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
-    - docker push pranavgautam/mutli-client
-    - docker push pranavgautam/mutli-nginx
-    - docker push pranavgautam/mutli-server
-    - docker push pranavgautam/mutli-worker
+  - docker build -t pranavgautam/multi-client ./client
+  - docker build -t pranavgautam/multi-nginx ./nginx
+  - docker build -t pranavgautam/multi-server ./server
+  - docker build -t pranavgautam/multi-worker ./worker
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
+  - docker push pranavgautam/multi-client
+  - docker push pranavgautam/multi-nginx
+  - docker push pranavgautam/multi-server
+  - docker push pranavgautam/multi-worker
